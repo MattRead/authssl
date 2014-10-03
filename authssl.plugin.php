@@ -40,7 +40,7 @@ class AuthSSL extends Plugin
 			if ( Utils::crypt($serial, $user->info->ssl_cert) ) {
 				EventLog::log(
 					_t(
-						'Successful login by ssl for %s using certificate: #%s',
+						'Successful login by ssl for %s using certificate #%s',
 						array( $user->username, $this->get_env('SSL_CLIENT_M_SERIAL')),
 						'authssl'
 					),
