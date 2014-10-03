@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pluggable type="plugin">
+	<name>Foop</name>
+	<license url="http://www.apache.org/licenses/LICENSE-2.0.html">Apache Software License 2.0</license>
+	<author url="http://mattread.com/">Matt Read</author>
+	<version>0.1</version>
+	<url>http://mattread.com/</url>
+	<description><![CDATA[Replaces ursl with cdn url.]]></description>
+	<copyright>2009</copyright>
+</pluggable>
+ 
