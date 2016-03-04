@@ -32,10 +32,21 @@ class AuthSSL extends Plugin
 			Utils::redirect(Site::get_url('login'));
 		}
 		if ( User::identify()->loggedin ) {
-			Session::notice(_t('You are already Logged in.', 'authssl'));
+			$user = User::identify();
+			if( $this->get_env('SSL_CLIENT_S_DN_Email') == $user->email ) {
+				$serial = $this->get_env('SSL_CLIENT_M_SERIAL') . $this->get_env('SSL_CLIENT_I_DN');
+				$user->info->ssl_cert = Utils::crypt($serial);
+				$user->info->commit();
+				Session::notice(_t('Saved Login Certificate #%s', array($this->get_env('SSL_CLIENT_M_SERIAL')), 'authssl'));
+			}
+			else {
+				Session::notice(_t('Your certificate email (%s) does not match your registered email (%s).',
+					array($this->get_env('SSL_CLIENT_S_DN_Email'), $user->email), 'authssl'));
+			}
 			Utils::redirect(Site::get_url('admin'));
 		}
-		if ( $user = User::get_by_email($this->get_env('SSL_CLIENT_S_DN_Email')) && isset($user->info->ssl_cert) ) {
+		$user = User::get_by_email($this->get_env('SSL_CLIENT_S_DN_Email'));
+		if ( $user && isset($user->info->ssl_cert) ) {
 			$serial = $this->get_env('SSL_CLIENT_M_SERIAL') . $this->get_env('SSL_CLIENT_I_DN');
 			if ( Utils::crypt($serial, $user->info->ssl_cert) ) {
 				EventLog::log(
@@ -103,7 +114,7 @@ class AuthSSL extends Plugin
 	 **/
 	public function action_theme_loginform_controls()
 	{
-		echo '<p><a href="' . Site::get_url('habari') . '/auth/url">Authenticate with SSL</a></p>';
+		echo '<p><a href="' . Site::get_url('habari') . '/auth/ssl">Authenticate with SSL</a></p>';
 	}
 
 	/**
